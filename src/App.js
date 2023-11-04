@@ -1,4 +1,5 @@
-import { useEffect, useState, useDeferredValue } from "react";
+import { useEffect, useState } from "react";
+import useDebounce from "./hooks/useDebounce";
 import "./App.css";
 
 const URL = "https://jsonplaceholder.typicode.com";
@@ -12,7 +13,8 @@ const filterBySearch = (entities, search) => {
 function App() {
   const [comments, setComments] = useState([]);
   const [search, setSearch] = useState("");
-  const deferredSearch = useDeferredValue(search); // useDeferredValue
+
+  const debouncedSearch = useDebounce(search, 500); // useDebounce
 
   // fetch comments from jsonplaceholder
   useEffect(() => {
@@ -35,13 +37,15 @@ function App() {
       <input className="searchInput" onChange={handleSearch} />
       <h2>searched comments:</h2>
       <ul className="comment">
-        {filterBySearch(comments, deferredSearch)?.map(({ id, name, body }) => (
-          <li key={id}>
-            {id}
-            <h3>{name} </h3>
-            <p>{body}</p>
-          </li>
-        ))}
+        {filterBySearch(comments, debouncedSearch)?.map(
+          ({ id, name, body }) => (
+            <li key={id}>
+              {id}
+              <h3>{name} </h3>
+              <p>{body}</p>
+            </li>
+          )
+        )}
       </ul>
     </>
   );
