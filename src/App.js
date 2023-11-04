@@ -31,7 +31,7 @@ function App() {
 
   return (
     <>
-      <h2>Search comments by useTransition</h2>
+      <h2>Search comments by useDefferedValue</h2>
       <input className="searchInput" onChange={handleSearch} />
       <h2>searched comments:</h2>
       <ul className="comment">
