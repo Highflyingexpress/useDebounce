@@ -1,5 +1,4 @@
-// startTransition для классовых
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useDeferredValue } from "react";
 import "./App.css";
 
 const URL = "https://jsonplaceholder.typicode.com";
@@ -11,9 +10,9 @@ const filterBySearch = (entities, search) => {
 };
 
 function App() {
-  const [isPending, startTransition] = useTransition();
   const [comments, setComments] = useState([]);
   const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search); // useDeferredValue
 
   // fetch comments from jsonplaceholder
   useEffect(() => {
@@ -27,21 +26,16 @@ function App() {
 
   // handle input typing
   const handleSearch = (e) => {
-    startTransition(() => {
-      // all not-urgent updates here
-      setSearch(e.target.value);
-    });
-    // позволяет разбить операцию на чанки не блокируя общий пользовательский поток
+    setSearch(e.target.value);
   };
 
   return (
     <>
       <h2>Search comments by useTransition</h2>
       <input className="searchInput" onChange={handleSearch} />
-      <>{isPending && <h2>Loading...</h2>}</>
       <h2>searched comments:</h2>
       <ul className="comment">
-        {filterBySearch(comments, search)?.map(({ id, name, body }) => (
+        {filterBySearch(comments, deferredSearch)?.map(({ id, name, body }) => (
           <li key={id}>
             {id}
             <h3>{name} </h3>
